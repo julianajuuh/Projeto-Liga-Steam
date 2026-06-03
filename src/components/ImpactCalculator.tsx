@@ -7,13 +7,52 @@ interface ImpactCalculatorProps {
   darkMode?: boolean;
 }
 
+type UnitType = "ton" | "kg" | "lb" | "car";
+
 export default function ImpactCalculator({ darkMode = false }: ImpactCalculatorProps) {
   const [weightInput, setWeightInput] = useState<string>("10");
+  const [unit, setUnit] = useState<UnitType>("ton");
   const [showFormulaDetails, setShowFormulaDetails] = useState<boolean>(false);
 
-  const numericWeight = parseFloat(weightInput);
-  const validWeight = isNaN(numericWeight) || numericWeight < 0 ? 0 : numericWeight;
-  const results = calcularImpactoSucata(validWeight);
+  const UNIT_CONVERTERS: Record<UnitType, { label: string; factor: number; suffix: string; helpText: string }> = {
+    ton: {
+      label: "Toneladas (t)",
+      factor: 1,
+      suffix: "t",
+      helpText: "Peso direto em toneladas métricas industriais."
+    },
+    kg: {
+      label: "Quilogramas (kg)",
+      factor: 0.001,
+      suffix: "kg",
+      helpText: "Convertido automaticamente para toneladas (1.000 kg = 1 t)."
+    },
+    lb: {
+      label: "Libras (lb)",
+      factor: 0.00045359237,
+      suffix: "lb",
+      helpText: "Convertido para toneladas (1 lb ≈ 0,453 kg)."
+    },
+    car: {
+      label: "Carros de passeio (unid.)",
+      factor: 1.2,
+      suffix: "unid.",
+      helpText: "Média de sucata ferrosa recuperável de suspensões/motor por carro popular (≈ 1,2 t)."
+    }
+  };
+
+  const PRESETS_BY_UNIT: Record<UnitType, number[]> = {
+    ton: [1, 5, 25, 100],
+    kg: [500, 1000, 5000, 25000],
+    lb: [1000, 5000, 10000, 50000],
+    car: [1, 5, 10, 50]
+  };
+
+  const selectedUnitConfig = UNIT_CONVERTERS[unit];
+  const numericValue = parseFloat(weightInput);
+  const validInputValue = isNaN(numericValue) || numericValue < 0 ? 0 : numericValue;
+  const totalInTons = validInputValue * selectedUnitConfig.factor;
+  const results = calcularImpactoSucata(totalInTons);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWeightInput(e.target.value);
@@ -42,50 +81,85 @@ export default function ImpactCalculator({ darkMode = false }: ImpactCalculatorP
         {/* Left Input Section */}
         <div className="lg:col-span-4 space-y-6">
           <div className={`border rounded-xl p-5 transition-colors duration-300 ${darkMode ? "bg-zinc-950 border-zinc-800" : "bg-slate-50 border-gray-200/60"}`}>
-            <label htmlFor="scrap-weight-input" className={`block text-sm font-medium mb-1 transition-colors duration-300 ${darkMode ? "text-zinc-200" : "text-gray-800"}`}>
-              Quantidade de Sucata (em Toneladas)
-            </label>
-            <p className={`text-xs mb-4 transition-colors duration-300 ${darkMode ? "text-zinc-500" : "text-gray-400"}`}>
-              Insira o peso estimado da sucata metálica para calcular os benefícios.
-            </p>
             
-            <div className="relative rounded-lg shadow-sm">
-              <input
-                type="number"
-                name="scrap-weight"
-                id="scrap-weight-input"
-                min="0"
-                step="any"
-                value={weightInput}
-                onChange={handleInputChange}
-                className={`w-full border rounded-lg px-4 py-3.5 text-lg font-semibold focus:border-orange-500 focus:ring-4 focus:ring-orange-550/10 placeholder-gray-300 outline-none transition-all pr-14 ${darkMode ? "bg-zinc-900 border-zinc-700 text-zinc-100" : "bg-white border-gray-300 text-gray-950"}`}
-                placeholder="Ex: 10"
-              />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                <span className={`font-medium text-sm transition-colors duration-300 ${darkMode ? "text-zinc-500" : "text-gray-400"}`}>tons</span>
+            {/* Unit Selection */}
+            <div className="mb-4">
+              <label htmlFor="scrap-unit-select" className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 transition-colors duration-300 ${darkMode ? "text-zinc-400" : "text-gray-500"}`}>
+                1. Selecione a Medida
+              </label>
+              <select
+                id="scrap-unit-select"
+                value={unit}
+                onChange={(e) => setUnit(e.target.value as UnitType)}
+                className={`w-full border rounded-lg px-3.5 py-2.5 text-sm font-medium focus:border-orange-500 hover:border-orange-500/55 outline-none transition-all cursor-pointer ${darkMode ? "bg-zinc-900 border-zinc-700 text-zinc-100" : "bg-white border-gray-300 text-gray-950"}`}
+              >
+                {Object.entries(UNIT_CONVERTERS).map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value.label}
+                  </option>
+                ))}
+              </select>
+              <p className={`text-[10px] mt-1 transition-colors duration-300 ${darkMode ? "text-zinc-500" : "text-gray-400"}`}>
+                {selectedUnitConfig.helpText}
+              </p>
+            </div>
+
+            {/* Quantity Input */}
+            <div className="mb-4">
+              <label htmlFor="scrap-weight-input" className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 transition-colors duration-300 ${darkMode ? "text-zinc-400" : "text-gray-500"}`}>
+                2. Quantidade da Sucata
+              </label>
+              
+              <div className="relative rounded-lg shadow-sm">
+                <input
+                  type="number"
+                  name="scrap-weight"
+                  id="scrap-weight-input"
+                  min="0"
+                  step="any"
+                  value={weightInput}
+                  onChange={handleInputChange}
+                  className={`w-full border rounded-lg px-4 py-3 text-base font-semibold focus:border-orange-500 focus:ring-4 focus:ring-orange-550/10 placeholder-gray-300 outline-none transition-all pr-16 ${darkMode ? "bg-zinc-900 border-zinc-700 text-zinc-100" : "bg-white border-gray-300 text-gray-950"}`}
+                  placeholder="Ex: 10"
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <span className={`font-semibold text-xs tracking-wider uppercase px-2 py-1 rounded transition-colors duration-300 ${darkMode ? "text-orange-400 bg-orange-950/40 border border-orange-900/35" : "text-orange-600 bg-orange-50 border border-orange-200"}`}>
+                    {selectedUnitConfig.suffix}
+                  </span>
+                </div>
               </div>
             </div>
 
+            {/* Equivalent value in Tons */}
+            {unit !== "ton" && (
+              <div className={`text-xs py-2 px-3 rounded-lg border mb-4 flex items-center justify-between transition-colors duration-300 ${darkMode ? "bg-zinc-900/40 border-zinc-800 text-zinc-400" : "bg-slate-100/50 border-slate-200 text-gray-600"}`}>
+                <span className="font-medium">Massa Equivalente:</span>
+                <span className="font-bold text-orange-600 font-mono text-xs">
+                  {totalInTons.toLocaleString("pt-BR", { maximumFractionDigits: 4 })} t
+                </span>
+              </div>
+            )}
+
             {/* Quick Presets */}
-            <div className="mt-5">
-              <span className={`text-[11px] font-semibold uppercase tracking-wider block mb-2 transition-colors duration-300 ${darkMode ? "text-zinc-500" : "text-gray-400"}`}>
+            <div>
+              <span className={`text-[10px] font-semibold uppercase tracking-wider block mb-2 transition-colors duration-300 ${darkMode ? "text-zinc-500" : "text-gray-400"}`}>
                 Atalhos Rápidos:
               </span>
-              <div className="flex flex-wrap gap-2">
-                {[1, 5, 25, 100].map((preset) => (
+              <div className="flex flex-wrap gap-1.5">
+                {PRESETS_BY_UNIT[unit].map((preset) => (
                   <button
                     key={preset}
                     type="button"
                     onClick={() => handleQuickPreset(preset)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors border ${
-                      numericWeight === preset
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors border ${
+                      numericValue === preset
                         ? "bg-orange-600 text-white border-orange-600"
                         : darkMode 
-                          ? "bg-zinc-900 text-zinc-350 border-zinc-800 hover:bg-zinc-800" 
+                          ? "bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-800" 
                           : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-100"
                     }`}
                   >
-                    {preset} t
+                    {preset.toLocaleString("pt-BR")}
                   </button>
                 ))}
               </div>
