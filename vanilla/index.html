@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArcelorMittal - Logística Reversa da Sucata</title>
+    <!-- Fonte Inter para um visual moderno e limpo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Cabeçalho Principal com Logo Conceitual ArcelorMittal -->
+    <header class="main-header">
+        <div class="container flex-header">
+            <div class="logo">
+                <span class="logo-text">ArcelorMittal</span>
+                <span class="badge-header">Economia Circular</span>
+            </div>
+            <p class="header-subtitle">Projeto de Logística Reversa para Sucata Siderúrgica</p>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- Hero Section Explicativa -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Logística Reversa da Sucata Metálica</h1>
+                <p>Veja como reinserimos materiais estruturais ferrosos descartados de volta na cadeia de valor, poupando energia, reduzindo emissões e preservando jazidas minerais cruciais para o futuro do nosso planeta.</p>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 1: O Ciclo do Aço (Interativo) -->
+        <section class="section-cycle">
+            <div class="section-title">
+                <h2>O Ciclo Circular do Aço</h2>
+                <p>Navegue pelas quatro etapas fundamentais de reinserção ecológica do aço na indústria.</p>
+            </div>
+
+            <!-- Grade de Cards com Passos -->
+            <div class="cycle-grid">
+                <!-- Passo 1 -->
+                <article class="cycle-card active" onclick="selecionarEtapa(1)" id="card-1">
+                    <div class="card-step">Etapa 01</div>
+                    <div class="card-icon">🚚</div>
+                    <h3>Coleta e Captação</h3>
+                    <p class="phase-desc">Mapeamento de descartes e fornecedores locais.</p>
+                </article>
+
+                <!-- Passo 2 -->
+                <article class="cycle-card" onclick="selecionarEtapa(2)" id="card-2">
+                    <div class="card-step">Etapa 02</div>
+                    <div class="card-icon">📊</div>
+                    <h3>Triagem e Processamento</h3>
+                    <p class="phase-desc">Segregação magnética e remoção de impurezas.</p>
+                </article>
+
+                <!-- Passo 3 -->
+                <article class="cycle-card" onclick="selecionarEtapa(3)" id="card-3">
+                    <div class="card-step">Etapa 03</div>
+                    <div class="card-icon">🔥</div>
+                    <h3>Derretimento Limpo</h3>
+                    <p class="phase-desc">Fundição a arco elétrico com baixa emissão.</p>
+                </article>
+
+                <!-- Passo 4 -->
+                <article class="cycle-card" onclick="selecionarEtapa(4)" id="card-4">
+                    <div class="card-step">Etapa 04</div>
+                    <div class="card-icon">🌱</div>
+                    <h3>Novo Aço Ecológico</h3>
+                    <p class="phase-desc">Material reinserido 100% qualificado.</p>
+                </article>
+            </div>
+
+            <!-- Painel de Detalhamento Dinâmico -->
+            <div class="detail-panel" id="detail-panel">
+                <div class="detail-content">
+                    <span class="detail-badge" id="detail-badge">Fase Ativa</span>
+                    <h3 id="detail-title">Coleta e Captação</h3>
+                    <p id="detail-desc">Carregando detalhes...</p>
+                    <ul class="detail-bullets" id="detail-bullets">
+                        <li>Fato 1</li>
+                        <li>Fato 2</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 2: Calculadora de Impacto de Sucata -->
+        <section class="section-calculator">
+            <div class="calculator-layout">
+                
+                <!-- Área do Formulário de Entrada (HTML5 Semântico) -->
+                <div class="calc-input-block">
+                    <div class="form-header">
+                        <span class="small-badge">Simulador Ambiental</span>
+                        <h2>Calculadora de Impacto</h2>
+                        <p>Digite a quantidade de metal/sucata recolhida para obter uma simulação instantânea dos impactos poupados ao planeta.</p>
+                    </div>
+
+                    <form id="impact-form" onsubmit="event.preventDefault();">
+                        <div class="form-group">
+                            <label for="sucata-peso">Peso de Sucata Metálica (Toneladas):</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="sucata-peso" min="0" step="any" value="10" placeholder="Ex: 10" required>
+                                <span class="input-unit">t</span>
+                            </div>
+                        </div>
+
+                        <button type="button" id="btn-calcular" class="btn-action">Calcular Impacto</button>
+                    </form>
+
+                    <div class="tip-box">
+                        <strong>💡 Dica Siderúrgica:</strong> Refinar uma tonelada de sucata poupa cerca de 1,4 toneladas de minério de ferro bruto do solo nacional.
+                    </div>
+                </div>
+
+                <!-- Área dos Resultados de Impacto -->
+                <div class="calc-results-block">
+                    <h3>Resultados de Sustentabilidade</h3>
+                    <p class="results-subtitle">Métricas de conservação ecológica baseadas nas fórmulas de cálculo:</p>
+
+                    <div class="results-grid">
+                        <!-- Métrica 1: CO2 -->
+                        <div class="result-card">
+                            <div class="r-icon">☁️</div>
+                            <div class="r-info">
+                                <span class="r-label">Gás Carbônico (CO₂) Evitado</span>
+                                <output id="out-co2" class="r-value">15,0 t</output>
+                                <p class="r-desc">De emissões poupadas de poluir a atmosfera.</p>
+                            </div>
+                        </div>
+
+                        <!-- Métrica 2: Energia -->
+                        <div class="result-card">
+                            <div class="r-icon">⚡</div>
+                            <div class="r-info">
+                                <span class="r-label">Energia Economizada</span>
+                                <output id="out-energia" class="r-value">14.000 kWh</output>
+                                <p class="r-desc">Abastece <strong id="out-casas">87.5</strong> residências médias brasileiras por um mês inteiro.</p>
+                            </div>
+                        </div>
+
+                        <!-- Métrica 3: Água -->
+                        <div class="result-card">
+                            <div class="r-icon">💧</div>
+                            <div class="r-info">
+                                <span class="r-label">Água Potável Poupada</span>
+                                <output id="out-agua" class="r-value">400.000 L</output>
+                                <p class="r-desc">Poupados por reciclar em vez de processar minério virgem.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rodapé Científico -->
+                    <div class="results-footer">
+                        <p>* Simulação de precisão baseada em indicadores do ecossistema de sustentabilidade ArcelorMittal.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-flex">
+            <p>&copy; 2026 ArcelorMittal Brasil S.A. - Todos os direitos reservados.</p>
+            <p>Trabalho Acadêmico de Web Desenvolvimento - Logística Reversa</p>
+        </div>
+    </footer>
+
+    <!-- Script Pure Vanilla JS -->
+    <script src="script.js"></script>
+</body>
+</html>
